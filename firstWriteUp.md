@@ -39,7 +39,8 @@ or can be visualized and demonstrated using a Jupyter Notebook.
 * Comment
 * User
 * Topic
-__ Topics have many posts, posts have many comments, users have many posts and comments __
+
+__Topics have many posts, posts have many comments, users have many posts and comments__
 This is more of a demo to meet the scope of this project, but adding authentication and votes would be the next logical step in this project.
 
 I will create a simple client for this service that will execute all the CRUD methods on some demo data.
