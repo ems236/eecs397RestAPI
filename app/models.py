@@ -2,8 +2,8 @@ from app import db
 
 class UserPostVote(db.Model):
     __tablename__ = 'user_post_vote'
-    team_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     vote = db.Column(db.Integer)
 
 
