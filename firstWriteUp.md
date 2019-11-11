@@ -22,6 +22,7 @@ or can be visualized and demonstrated using a Jupyter Notebook.
     * json
 + I'd expect to use some more permant storage, most likely sql
     * SQLAlchemy
+    * flask_sqlalchemy
     * sqlite3
     * pickle / shelve for a nonsql solution
 + other networking
