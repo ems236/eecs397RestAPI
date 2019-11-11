@@ -8,14 +8,32 @@ project (usually something developed by a small group over a weekend). Aim for
 something that can be demonstrated either through running the Python code on its own,
 or can be visualized and demonstrated using a Jupyter Notebook.
 
+Ellis Saupe ems236 first writeup
+====================
 
-1: I don't really know how I expect to use python.  It's nice to know a convenient and cross platform scripting language; I may just use it to write small tools for myself.  I have no interest at all in data science or machine learning, so I hopefully can avoid most of the data analysis side of python.  I am interested in iot, so I expect to mostly work on scripts and networking in python.
+1. 
+I don't really know how I expect to use python.  It's nice to know a convenient and cross platform scripting language; I may just use it to write small tools for myself.  I don't have a lot of interesting in data science or machine learning, so I hopefully can avoid most of the data analysis side of python.  I am interested in iot, so I expect to mostly work on scripts and networking in python.
+2. 
++ Some nice web hosting modules that I've used are 
+    * Flask
+    * Django
+    * I don't know if it really counts but uwsgi
++ I expect that I'd have to call some web services at some point. This should be pretty easy because python is dynamically typed and deserializing json should be trivial.  
+    * requests
+    * json
++ I'd expect to use some more permant storage, most likely sql
+    * SQLAlchemy
+    * sqlite3
+    * pickle / shelve for a nonsql solution
++ other networking
+    * paho-mqtt is good for message passing
+    * pyOpenSSL is good for security
++ config file parsing
+    * json for json
+    * ElementTree for xml
+    * pyYaml for yaml
++ command line arguments
+    * argparse
 
-2: For networking, I would likely need to call web service. This should be pretty easy because python is dynamically typed and deserializing json should be trivial.  
-To work with this, I will use the requests module.  
-I may also have to write my own REST services in python.  That would most easily be done with Flask.  
-For data storage to make my webservice useful, I would need some database client to use with a sqllite database.  The most popular option for this appears to be using SQLAlchemy as an ORM.
-Other modules that would be useful would be UWSGI for actual web hosting, paho-mqtt for message passing, and pyOpenSSL for security.
-For general scripting, it would be good to know some modules for XML and YAML parsing. ElementTree seems good for xml, and pyYaml would be good for yaml.
-
-3: I will make a flask app that will host a rest api to communicate with a database.
+3. 
+I will make a flask app that will host a rest api to communicate with a database.
