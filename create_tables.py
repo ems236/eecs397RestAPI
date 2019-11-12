@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-if(__name__ == "__main__"):
+if __name__ == "__main__":
     from app import db
     from app.models import *
 

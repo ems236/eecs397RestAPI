@@ -172,6 +172,8 @@ def users_get():
 
 @app.route('/users', methods=[POST])
 def users_post():
+    print(request.json)
+    print(request.data)
     if not request.json or not request.json["name"]:
         return abort(400)
     
