@@ -43,12 +43,14 @@ def topic_id(topic_id):
     
     if request.method == GET:
         return success_response(topic.serialize())
+
     if request.method == PUT:
         if not request.json or not request.json["name"]:
             return abort(400)
         topic.name = request.json["name"]
         db.session.commit()
         return success_response({"success": True})
+
     if request.method == DELETE:
         db.session.delete(topic)
         db.session.commit()
@@ -57,24 +59,93 @@ def topic_id(topic_id):
 
 @app.route('/topics/<int:topic_id>/posts', methods=[GET])
 def posts_get(topic_id):
-    pass
+    posts = Post.query.filter(Post.topic_id == topic_id).all()
+    return success_response(serialize_models(posts))
 
 @app.route('/topics<int:topic_id>/posts', methods=[POST])
-def posts_post():
-    if not request.json or not request.json["name"]:
+def posts_post(topic_id):
+    if not request.json or not request.json["user_id"] or not request.json["title"] or not request.json["detail"]:
         return abort(400)
 
-    new_topic = Post()
-    new_topic.name = request.json["name"]
+    topic = model_by_id(Topic, topic_id)
+    user = model_by_id(User, request.json["user_id"])
+    if topic is None or user is None:
+        return abort(400)
+    
+    new_post = Post()
+    new_post.topic_id = topic_id 
+    new_post.title = request.json["title"]
+    new_post.detail = request.json["detail"]
+    new_post.user_id = request.json["user_id"]
 
-    db.session.add(new_topic)
+    db.session.add(new_post)
     db.session.commit()
 
-    return success_response({"id": new_topic.id})
+    return success_response({"id": new_post.id})
 
 @app.route('/topics/<int:topic_id>/posts/<int:post_id>', methods=[GET, PUT, DELETE])
 def post_id(topic_id, post_id):
-    pass
+    post = Post.query.filter(Post.id == post_id and topic_id == topic_id).first()
+
+    if post is None:
+        return abort(400)
+    
+    if request.method == GET:
+        return success_response(post.serialize())
+
+    if request.method == PUT:
+        if not request.json or not request.json["user_id"] or not request.json["title"] or not request.json["detail"]:
+            return abort(400)
+        post.user_id = request.json["user_id"]
+        post.title = request.json["title"]
+        post.detail = request.json["detail"]
+        db.session.commit()
+        return success_response({"success": True})
+
+    if request.method == DELETE:
+        db.session.delete(post)
+        db.session.commit()
+        return success_response({"success": True})
+
+@app.route('/users', methods=[GET])
+def users_get():
+    users = User.query.all()
+    return success_response(serialize_models(users))
+
+@app.route('/users', methods=[POST])
+def users_post():
+    if not request.json or not request.json["name"]:
+        return abort(400)
+    
+    new_user = User()
+    new_user.name = request.json["name"]
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return success_response({"id": new_user.id})
+
+@app.route('/users/<int:user_id>', methods=[GET, PUT, DELETE])
+def user_id(user_id):
+    user = model_by_id(User, topic_id)
+    if user is None:
+        return abort(400)
+    
+    if request.method == GET:
+        return success_response(user.serialize())
+
+    if request.method == PUT:
+        if not request.json or not request.json["name"]:
+            return abort(400)
+        user.name = request.json["name"]
+        db.session.commit()
+        return success_response({"success": True})
+
+    if request.method == DELETE:
+        db.session.delete(user)
+        db.session.commit()
+        return success_response({"success": True})
+
 
 """
 @app.route('/topics/<int:id>/posts/<int:post_id>/comments', methods=[GET, POST])
@@ -85,12 +156,3 @@ def comments(topic_id, post_id):
 def comment_id(topic_id, post_id, comment_id):
     pass
 """
-
-@app.route('/users', methods=[GET, POST])
-def users():
-    pass
-
-@app.route('/users/<int:user_id>', methods=[GET, PUT, DELETE])
-def user_id(user_id):
-    pass
-
