@@ -1,6 +1,7 @@
 from flask import abort, request, jsonify, make_response
 from app.models import * 
 from app import app, db
+from sqlalchemy import func, sum
 
 GET = 'GET'
 POST = 'POST'
@@ -106,6 +107,63 @@ def post_id(topic_id, post_id):
         db.session.delete(post)
         db.session.commit()
         return success_response({"success": True})
+
+
+@app.route('/topics/<int:topic_id>/posts/<int:post_id>/votes', methods=[GET])
+def votes_get(topic_id, post_id):
+    post = Post.query.filter(Post.id == post_id and topic_id == topic_id).first()
+
+    if post is None:
+        return abort(400)
+
+    count = db.session.query(func.sum(UserPostVote.vote)).filter(UserPostVote.post_id == post_id).scalar()
+    users = list(map(lambda x: x.user_id, post.votes))
+    return success_response({"count": count, "users": users})
+
+
+@app.route('/topics/<int:topic_id>/posts/<int:post_id>/votes/<int:user_id>', methods=[GET, PUT, DELETE, POST])
+def votes_user_id(topic_id, post_id, user_id):
+    post = Post.query.filter(Post.id == post_id and topic_id == topic_id).first()
+    user = model_by_id(User, user_id)
+    if post is None or user is None:
+        return abort(400)
+
+    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id and UserPostVote.user_id == user_id)
+
+    if request.method == POST:
+        if not request.json or not request.json["value"] or current_vote is not None:
+            return abort(400)
+        
+        new_vote = UserPostVote()
+        new_vote.vote = request.json["value"]
+        new_vote.post = post
+        new_vote.user = user
+
+        db.session.add(new_vote)
+        db.session.commit()
+    
+    
+    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id and UserPostVote.user_id == user_id)
+    if current_vote is None:
+        return abort(400)
+    if request.method == PUT:
+        if not request.json or not request.json["value"]:
+            return abort(400)
+        
+        current_vote.vote = request.json["value"]
+
+        db.session.commit()
+        return success_response({"success": True})
+
+    if request.method == DELETE:
+        db.session.delete(post)
+        db.session.commit()
+        return success_response({"success": True})
+
+    if request.method == GET:
+        return success_response({"vote": current_vote.vote})
+
+
 
 @app.route('/users', methods=[GET])
 def users_get():

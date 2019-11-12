@@ -44,7 +44,7 @@ class Post(db.Model):
     votes = db.relationship("UserPostVote", backref="post", lazy=False)
 
     def serialize(self):
-        return {"id": self.id, "user_id": self.user_id, "title": self.title, "detail": self.detail, "votes": len(self.votes)}
+        return {"id": self.id, "user_id": self.user_id, "title": self.title, "detail": self.detail}
         
 """
 class Comment(db.Model):
