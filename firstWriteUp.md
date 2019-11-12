@@ -37,12 +37,12 @@ or can be visualized and demonstrated using a Jupyter Notebook.
 
 3. To work with some of these modules, I'll create a REST api for a small forum.  I will run the app locally with a flask debug server.  The site will use a sqlite backend and use sqlalchemy to interact with the database.  I will have the following entities:
 * Post
-* Comment
 * User
 * Topic
+* UserPostVotes
 
-_Topics have many posts, posts have many comments, users have many posts and comments_
+_Topics have many posts, users have many posts, UserPostVotes is a relation between users and posts that stores an int for the user vote_
 
-This is more of a demo to meet the scope of this project, but adding authentication and votes would be the next logical step in this project.
+This is more of a demo to meet the scope of this project, but adding authentication to votes would be the next logical step in this project.
 
 I will create a simple client for this service that will execute all the CRUD methods on some demo data.

@@ -1,7 +1,7 @@
 from flask import abort, request, jsonify, make_response
 from app.models import * 
 from app import app, db
-from sqlalchemy import func, sum
+from sqlalchemy import func
 
 GET = 'GET'
 POST = 'POST'
