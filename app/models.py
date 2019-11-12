@@ -15,7 +15,7 @@ class User(db.Model):
 
     votes = db.relationship("UserPostVote", backref="user", lazy=False)
     posts = db.relationship("Post", backref="user", lazy=True)
-    comments = db.relationship("Comment", backref="user", lazy=True)
+    #comments = db.relationship("Comment", backref="user", lazy=True)
 
     def serialize(self):
         return {"id": self.id, "name": self.name}
@@ -28,7 +28,7 @@ class Topic(db.Model):
 
     posts = db.relationship("Post", backref="topic", lazy=False)
 
-    def to_json(self):
+    def serialize(self):
         return {"id": self.id, "name": self.name}
 
 
@@ -40,13 +40,13 @@ class Post(db.Model):
     title = db.Column(db.String)
     detail = db.Column(db.String)
 
-    comments = db.relationship("Comment", backref="post", lazy=False)
+    #comments = db.relationship("Comment", backref="post", lazy=False)
     votes = db.relationship("UserPostVote", backref="post", lazy=False)
 
-    def to_json(self):
+    def serialize(self):
         return {"id": self.id, "user_id": self.user_id, "title": self.title, "detail": self.detail, "votes": len(self.votes)}
         
-
+"""
 class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
@@ -54,6 +54,6 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     text = db.Column(db.String)
 
-    def to_json(self):
+    def serialize(self):
         return {"id": self.id, "user_id": self.user_id, "text": self.text}
-        
+"""

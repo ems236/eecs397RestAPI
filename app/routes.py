@@ -37,18 +37,34 @@ def topics_post():
 
 @app.route('/topics/<int:topic_id>', methods=[GET, PUT, DELETE])
 def topic_id(topic_id):
-    pass
+    topic = model_by_id(Topic, topic_id)
+    if topic is None:
+        return abort(400)
+    
+    if request.method == GET:
+        return success_response(topic.serialize())
+    if request.method == PUT:
+        if not request.json or not request.json["name"]:
+            return abort(400)
+        topic.name = request.json["name"]
+        db.session.commit()
+        return success_response({"success": True})
+    if request.method == DELETE:
+        db.session.delete(topic)
+        db.session.commit()
+        return success_response({"success": True})
+
 
 @app.route('/topics/<int:topic_id>/posts', methods=[GET])
 def posts_get(topic_id):
     pass
 
-@app.route('/topics', methods=[POST])
-def topics_post():
+@app.route('/topics<int:topic_id>/posts', methods=[POST])
+def posts_post():
     if not request.json or not request.json["name"]:
         return abort(400)
 
-    new_topic = Topic()
+    new_topic = Post()
     new_topic.name = request.json["name"]
 
     db.session.add(new_topic)
@@ -60,6 +76,7 @@ def topics_post():
 def post_id(topic_id, post_id):
     pass
 
+"""
 @app.route('/topics/<int:id>/posts/<int:post_id>/comments', methods=[GET, POST])
 def comments(topic_id, post_id):
     pass
@@ -67,6 +84,7 @@ def comments(topic_id, post_id):
 @app.route('/topics/<int:topic_id>/posts/<int:post_id>/comments/<int:comment_id>', methods=[GET, PUT, DELETE])
 def comment_id(topic_id, post_id, comment_id):
     pass
+"""
 
 @app.route('/users', methods=[GET, POST])
 def users():
