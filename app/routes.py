@@ -25,7 +25,7 @@ def topics_get():
 
 @app.route('/topics', methods=[POST])
 def topics_post():
-    if not request.json or not request.json["name"]:
+    if not request.json or not "name" in request.json:
         return abort(400)
 
     new_topic = Topic()
@@ -46,7 +46,7 @@ def topic_id(topic_id):
         return success_response(topic.serialize())
 
     if request.method == PUT:
-        if not request.json or not request.json["name"]:
+        if not request.json or not "name" in request.json:
             return abort(400)
         topic.name = request.json["name"]
         db.session.commit()
@@ -65,7 +65,7 @@ def posts_get(topic_id):
 
 @app.route('/topics/<int:topic_id>/posts', methods=[POST])
 def posts_post(topic_id):
-    if not request.json or not request.json["user_id"] or not request.json["title"] or not request.json["detail"]:
+    if not request.json or not "user_id" in request.json or not "title" in request.json or not "detail" in request.json:
         return abort(400)
 
     topic = model_by_id(Topic, topic_id)
@@ -95,7 +95,7 @@ def post_id(topic_id, post_id):
         return success_response(post.serialize())
 
     if request.method == PUT:
-        if not request.json or not request.json["user_id"] or not request.json["title"] or not request.json["detail"]:
+        if not request.json or not "user_id" in request.json or not "title" in request.json or not "detail" in request.json:
             return abort(400)
         post.user_id = request.json["user_id"]
         post.title = request.json["title"]
@@ -131,7 +131,7 @@ def votes_user_id(topic_id, post_id, user_id):
     current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id).filter(UserPostVote.user_id == user_id).first()
 
     if request.method == POST:
-        if not request.json or not request.json["value"] or current_vote is not None:
+        if not request.json or not "value" in request.json or current_vote is not None:
             return abort(400)
         
         new_vote = UserPostVote()
@@ -148,7 +148,7 @@ def votes_user_id(topic_id, post_id, user_id):
     if current_vote is None:
         return abort(400)
     if request.method == PUT:
-        if not request.json or not request.json["value"]:
+        if not request.json or not "value" in request.json:
             return abort(400)
         
         current_vote.vote = request.json["value"]
@@ -157,7 +157,7 @@ def votes_user_id(topic_id, post_id, user_id):
         return success_response({"success": True})
 
     if request.method == DELETE:
-        db.session.delete(post)
+        db.session.delete(current_vote)
         db.session.commit()
         return success_response({"success": True})
 
@@ -175,7 +175,7 @@ def users_get():
 def users_post():
     print(request.json)
     print(request.data)
-    if not request.json or not request.json["name"]:
+    if not request.json or not "name" in request.json:
         return abort(400)
     
     new_user = User()
@@ -196,7 +196,7 @@ def user_id(user_id):
         return success_response(user.serialize())
 
     if request.method == PUT:
-        if not request.json or not request.json["name"]:
+        if not request.json or not "name" in request.json:
             return abort(400)
         user.name = request.json["name"]
         db.session.commit()
