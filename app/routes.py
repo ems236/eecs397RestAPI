@@ -63,7 +63,7 @@ def posts_get(topic_id):
     posts = Post.query.filter(Post.topic_id == topic_id).all()
     return success_response(serialize_models(posts))
 
-@app.route('/topics<int:topic_id>/posts', methods=[POST])
+@app.route('/topics/<int:topic_id>/posts', methods=[POST])
 def posts_post(topic_id):
     if not request.json or not request.json["user_id"] or not request.json["title"] or not request.json["detail"]:
         return abort(400)
@@ -187,7 +187,7 @@ def users_post():
 
 @app.route('/users/<int:user_id>', methods=[GET, PUT, DELETE])
 def user_id(user_id):
-    user = model_by_id(User, topic_id)
+    user = model_by_id(User, user_id)
     if user is None:
         return abort(400)
     
