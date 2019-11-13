@@ -256,4 +256,5 @@ if __name__ == "__main__":
     posts = test_posts(topics, users)
     test_votes(topics, users, posts)
 
-
+    print("trying a cascade delete")
+    delete_user(users[0]["id"])

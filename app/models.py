@@ -13,8 +13,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
-    votes = db.relationship("UserPostVote", backref="user", lazy=False)
-    posts = db.relationship("Post", backref="user", lazy=True)
+    votes = db.relationship("UserPostVote", cascade="all,delete", backref="user", lazy=False)
+    posts = db.relationship("Post", cascade="all,delete", backref="user", lazy=True)
     #comments = db.relationship("Comment", backref="user", lazy=True)
 
     def serialize(self):
@@ -26,7 +26,7 @@ class Topic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
-    posts = db.relationship("Post", backref="topic", lazy=False)
+    posts = db.relationship("Post", cascade="all,delete", backref="topic", lazy=False)
 
     def serialize(self):
         return {"id": self.id, "name": self.name}
@@ -41,7 +41,7 @@ class Post(db.Model):
     detail = db.Column(db.String)
 
     #comments = db.relationship("Comment", backref="post", lazy=False)
-    votes = db.relationship("UserPostVote", backref="post", lazy=False)
+    votes = db.relationship("UserPostVote", cascade="all,delete", backref="post", lazy=False)
 
     def serialize(self):
         return {"id": self.id, "user_id": self.user_id, "title": self.title, "detail": self.detail}
