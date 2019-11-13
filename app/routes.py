@@ -15,7 +15,7 @@ def model_by_id(Model, id):
     return Model.query.filter(Model.id == id).first()
 
 def serialize_models(models):
-    return list(map(lambda x: x.serialze(), models))
+    return list(map(lambda x: x.serialize(), models))
 
 
 @app.route('/topics', methods=[GET])
