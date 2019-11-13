@@ -195,13 +195,7 @@ def lookup_vote(topic_id, post_id, user_id):
 
 def create_vote(number, topic_id, post_id, user_id):
     data = json.dumps({"value": number})
-    response = requests.post(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}", data=data, headers=JSON_HEADER)
-
-    if response:
-        new_id = response.json()["id"]
-        return new_id
-    
-    return -1
+    requests.post(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}", data=data, headers=JSON_HEADER)
 
 def all_votes(topic_id, post_id):
     response = requests.get(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes")
@@ -221,8 +215,8 @@ def delete_vote(topic_id, post_id, user_id):
 
 def test_votes(topics, users, posts):
     
-    users.add(create_user("vote tester"))
-    users.add(create_user("not creative"))
+    users.append(lookup_user(create_user("vote tester")))
+    users.append(lookup_user(create_user("not creative")))
 
     expected_values = {}
     for topic in topics:
@@ -240,17 +234,18 @@ def test_votes(topics, users, posts):
             print(f"Looking up votes in topic {topic['name']}/{post['title']}. Got {votes['count']}, expected {expected_values[post['id']]}")
 
     print(f"editting votes for user [0]")
-    edit_vote(-5, topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
+    edit_vote(-5, topics[0]["id"], posts[topics[0]["id"]][0]["id"], users[0]["id"])
 
-    new_votes = lookup_vote(topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
-    print(f"looking votes that should be -5 now. Found {new_votes['value']}")
+    new_votes = lookup_vote(topics[0]["id"], posts[topics[0]["id"]][0]["id"], users[0]["id"])
+    print(f"looking votes that should be -5 now. Found {new_votes['vote']}")
 
     print(f"deleting negative votes")
-    delete_vote(topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
+    delete_vote(topics[0]["id"], posts[topics[0]["id"]][0]["id"], users[0]["id"])
 
     print(f"total votes on this post should be different now")
-    votes = all_votes(topics[0]["id"], post[topic[0]["id"]]["id"])
-    print(f"total votes on this post should be different now {topics[0]['name']}/{post[topic[0]['id']]['title']}. Got {votes['count']}, was {expected_values[post[topic[0]['id']]['id']]}")    
+    votes = all_votes(topics[0]["id"], posts[topics[0]["id"]][0]["id"])
+    expected_votes = expected_values[posts[topics[0]['id']][0]['id']]
+    print(f"total votes on this post should be different now {topics[0]['name']}/{posts[topics[0]['id']][0]['title']}. Got {votes['count']}, was {expected_votes}")    
 
 
 if __name__ == "__main__":
@@ -259,6 +254,6 @@ if __name__ == "__main__":
     users = test_users()
     topics = test_topics()
     posts = test_posts(topics, users)
-    test_votes()
+    test_votes(topics, users, posts)
 
 

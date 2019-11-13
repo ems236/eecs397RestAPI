@@ -128,7 +128,7 @@ def votes_user_id(topic_id, post_id, user_id):
     if post is None or user is None:
         return abort(400)
 
-    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id and UserPostVote.user_id == user_id)
+    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id).filter(UserPostVote.user_id == user_id).first()
 
     if request.method == POST:
         if not request.json or not request.json["value"] or current_vote is not None:
@@ -144,7 +144,7 @@ def votes_user_id(topic_id, post_id, user_id):
         return success_response({"success": True})
 
     
-    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id and UserPostVote.user_id == user_id)
+    current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id).filter(UserPostVote.user_id == user_id).first()
     if current_vote is None:
         return abort(400)
     if request.method == PUT:
