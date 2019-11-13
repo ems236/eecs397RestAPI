@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 
 BASE_URL = "http://127.0.0.1:5000"
 JSON_HEADER = {"Content-Type": "application/json"}
@@ -130,8 +131,8 @@ def lookup_post(id, topic_id):
     
     return None
 
-def create_post(title, description, user_id, topic_id):
-    data = json.dumps({"title": title, "description": description, "user_id": user_id})
+def create_post(title, description, topic_id, user_id):
+    data = json.dumps({"title": title, "detail": description, "user_id": user_id})
     response = requests.post(f"{BASE_URL}/topics/{topic_id}/posts", data=data, headers=JSON_HEADER)
 
     if response:
@@ -150,7 +151,7 @@ def all_posts(topic_id):
     return []
 
 def edit_post(id, topic_id, new_title, new_description, new_user):
-    data = json.dumps({"title": new_title, "description": new_description, "user_id": new_user})
+    data = json.dumps({"title": new_title, "detail": new_description, "user_id": new_user})
     requests.put(f"{BASE_URL}/topics/{topic_id}/posts/{id}", data=data, headers=JSON_HEADER)
 
 def delete_post(id, topic_id):
@@ -164,13 +165,13 @@ def test_posts(topics, users):
     
     for topic in topics:
         for post in all_posts(topic["id"]):
-            print(f"Looking up posts in topic {topic['name']}, found {post['title']} {post['description']} with id {post['id']}")
+            print(f"Looking up posts in topic {topic['name']}, found {post['title']} {post['detail']} with id {post['id']}")
 
     print(f"editting python changelog")
     edit_post(python_post_changelog, topics[0]["id"], "python 3.9 changelog", "Nothing much new", users[0]["id"])
 
     new_changelog = lookup_post(python_post_changelog, topics[0]["id"])
-    print(f"looking up editted changelong. Found {new_changelog['name']} with id {new_changelog['title']} {new_changelog['description']} with id {new_changelog['id']}")
+    print(f"looking up editted changelong. Found {new_changelog['id']} {new_changelog['title']} -- {new_changelog['detail']} with user id {new_changelog['user_id']}")
 
     print(f"deleting help post")
     delete_post(python_post_help, topics[0]["id"])
@@ -179,9 +180,78 @@ def test_posts(topics, users):
     for topic in topics:
         current_posts[topic["id"]] = all_posts(topic["id"])
         for post in current_posts[topic["id"]]:
-            print(f"Looking up posts in topic {topic['name']}, found {post['title']} {post['description']} with id {post['id']}")
+            print(f"Looking up posts in topic {topic['name']}, found {post['title']} -- {post['detail']} with id {post['id']} and user_id {post['user_id']}")
 
     return current_posts
+
+
+def lookup_vote(topic_id, post_id, user_id):
+    response = requests.get(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}")
+
+    if response:
+        return response.json()
+    
+    return None
+
+def create_vote(number, topic_id, post_id, user_id):
+    data = json.dumps({"value": number})
+    response = requests.post(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}", data=data, headers=JSON_HEADER)
+
+    if response:
+        new_id = response.json()["id"]
+        return new_id
+    
+    return -1
+
+def all_votes(topic_id, post_id):
+    response = requests.get(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes")
+
+    if response:
+        posts = response.json()
+        return posts
+    
+    return []
+
+def edit_vote(number, topic_id, post_id, user_id):
+    data = json.dumps({"value": number})
+    requests.put(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}", data=data, headers=JSON_HEADER)
+
+def delete_vote(topic_id, post_id, user_id):
+    requests.delete(f"{BASE_URL}/topics/{topic_id}/posts/{post_id}/votes/{user_id}")
+
+def test_votes(topics, users, posts):
+    
+    users.add(create_user("vote tester"))
+    users.add(create_user("not creative"))
+
+    expected_values = {}
+    for topic in topics:
+        for post in posts[topic["id"]]:
+            sum = 0
+            for user in users:
+                new_vote = random.randint(0, 5)
+                sum = sum + new_vote
+                create_vote(new_vote, topic["id"], post["id"], user["id"])
+            expected_values[post["id"]] = sum
+
+    for topic in topics:
+        for post in posts[topic["id"]]:
+            votes = all_votes(topic["id"], post["id"])
+            print(f"Looking up votes in topic {topic['name']}/{post['title']}. Got {votes['count']}, expected {expected_values[post['id']]}")
+
+    print(f"editting votes for user [0]")
+    edit_vote(-5, topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
+
+    new_votes = lookup_vote(topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
+    print(f"looking votes that should be -5 now. Found {new_votes['value']}")
+
+    print(f"deleting negative votes")
+    delete_vote(topic[0]["id"], post[topic[0]["id"]]["id"], users[0]["id"])
+
+    print(f"total votes on this post should be different now")
+    votes = all_votes(topics[0]["id"], post[topic[0]["id"]]["id"])
+    print(f"total votes on this post should be different now {topics[0]['name']}/{post[topic[0]['id']]['title']}. Got {votes['count']}, was {expected_values[post[topic[0]['id']]['id']]}")    
+
 
 if __name__ == "__main__":
     #make some data
@@ -189,6 +259,6 @@ if __name__ == "__main__":
     users = test_users()
     topics = test_topics()
     posts = test_posts(topics, users)
-    #test_votes()
+    test_votes()
 
 

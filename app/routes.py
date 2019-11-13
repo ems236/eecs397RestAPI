@@ -141,7 +141,8 @@ def votes_user_id(topic_id, post_id, user_id):
 
         db.session.add(new_vote)
         db.session.commit()
-    
+        return success_response({"success": True})
+
     
     current_vote = UserPostVote.query.filter(UserPostVote.post_id == post_id and UserPostVote.user_id == user_id)
     if current_vote is None:
