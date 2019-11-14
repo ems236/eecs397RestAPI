@@ -17,6 +17,7 @@ I didn't want to get too crazy with this, so I got about as far as I expected to
 * The database could include things like comments.  I could add moderators or a user saved section.  Most forums don't have a ton of features, but a few things would flesh out my forum a lot.
 * My flask api is pretty lacking in flexibility.  I should add filtering and sorting to all generic get requests using querystring parameters.  Using some form of user authentication (OAuth2 would be a good exercise) would be much better than passing user_ids around everywhere.
 * I think the test client is pretty alright.  If I added any functionality to the server I would have to add more methods to the client, but it can do everything the server supports right now.
+* Not so much a python task but moving it to an actual server with nginc / uWSGI would be good.
 
 #### How to demo
 1. initialize a virtual environment with the requirements.txt file
@@ -25,7 +26,9 @@ I didn't want to get too crazy with this, so I got about as far as I expected to
 4. flask run
 5. run apiTester.py
 
-For more flexible testing, you can import apiTester.py and call any of its methods.
+For more flexible testing, you can import apiTester.py and call any of its methods.  It has CRUD methods for all entities that will make the appropriate API calls.
+
+The default flask server runs on 127.0.0.1:5000
 
 API endpoints are:
 * /topics
