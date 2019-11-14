@@ -1,5 +1,3 @@
-The third deliverable will be a write-up that explains how far you got in your project, whatdifficulties you faced, and what future improvements you could make. You should also includeinstructions on how to demo the code you developed (a Jupyter Notebook could come in handyfor this).
-
 ### Ellis Saupe ems236 second writeup / third deliverable
 
 #### How far I got

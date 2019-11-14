@@ -1,13 +1,3 @@
-The first deliverable is a short write-up where:
-1. You will share some of the ways you hope to use Python going forward. Are you hoping
-to use it for AI, data analysis, game development, etc.?
-2. You will identify Python modules that can help you with what you describe in point 1.
-3. Pick a module and describe a short project/prototype you can start to develop. Aim for
-something that is beyond the level of a tutorial, but slightly less than a hack-a-thon
-project (usually something developed by a small group over a weekend). Aim for
-something that can be demonstrated either through running the Python code on its own,
-or can be visualized and demonstrated using a Jupyter Notebook.
-
 ### Ellis Saupe ems236 first writeup
 
 1. I don't really know how I expect to use python.  It's nice to know a convenient and cross platform scripting language; I may just use it to write small tools for myself.  I don't have a lot of interesting in data science or machine learning, so I hopefully can avoid most of the data analysis side of python.  I am interested in iot, so I expect to mostly work on scripts and networking in python.
